@@ -22,6 +22,7 @@ def win():
     if s == True:
         ran = randint(1, 1000) 
         winner.setText(str(ran))
+        buton.hide()
         s=False
 buton.clicked.connect(win)
 
