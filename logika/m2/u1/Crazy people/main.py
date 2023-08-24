@@ -24,6 +24,8 @@ def win():
         winner.setText(str(ran))
         buton.hide()
         s=False
+
+        
 buton.clicked.connect(win)
 
 
