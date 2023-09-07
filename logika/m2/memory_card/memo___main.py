@@ -28,19 +28,46 @@ frm_card = 0  # тут буде зв'язуватися питання з фор
 timer = QTimer()
 win_main = QWidget()
 win_card = QWidget()
+win_main.setStyleSheet('''
+                        background-color: rgb(25, 25, 112);
+                        color: white;
+                        font-size: 20px;
+                        border: 2px solid white; 
+                        ''')
 
-
+win_card.setStyleSheet('''
+                        background-color: rgb(25, 25, 112);
+                        color: white;
+                        font-size: 20px;
+                        border: 2px solid white; 
+                        ''')
+btn_add.setStyleSheet('''
+                        background-color: green;
+                        color: white;
+                        font-size: 20px;
+                        border: 2px solid white; 
+                        ''')
+btn_delete.setStyleSheet('''
+                        background-color: red;
+                        color: white;
+                        font-size: 20px;
+                        border: 2px solid white;
+                        ''')
+lb_Result.setStyleSheet('margin: 20px')
 # Тестові данні
 def testlist():
 
-    frm = Question('Яблуко', 'apple', 'application', 'pinapple', 'apply')
+    frm = Question('2+2?', '4', '5', '2', '22')
     questions_listmodel.form_list.append(frm)
-    frm = Question('Дім', 'house', 'horse', 'hurry', 'hour')
+    frm = Question('8*0.5', '4', '2', '6', '8')
     questions_listmodel.form_list.append(frm)
-    frm = Question('Мишка', 'mouse', 'mouth', 'muse', 'museum')
+    frm = Question('4*12/934*12*0', '0', '3.234', '12', '543')
     questions_listmodel.form_list.append(frm)
-    frm = Question('Число', 'number', 'digit', 'amount', 'summary')
+    frm = Question('13+10/10', '14', '2,3', '23', '1')
     questions_listmodel.form_list.append(frm)
+    frm = Question('12+34', '14', '2,3', '23', '1')
+    questions_listmodel.form_list.append(frm)
+
 
 # Функції для проведення тесту
 
