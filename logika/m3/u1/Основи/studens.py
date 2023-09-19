@@ -11,6 +11,12 @@ with open("stud.txt", "r" , encoding="utf-8") as file:
         studens.append(obj)
 
 
+palka = 0
 for studen in studens:
     if studen.grade == 5:
         print(studen.name, studen.surname)
+for studen in studens :
+    palka+=studen.grade
+palka /= len(studens)
+print("Середня оцінка:",round(palka, 2))
+    
