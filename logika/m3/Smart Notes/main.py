@@ -27,7 +27,7 @@ btn_note_save = QPushButton("Зберегти замітку")
 
 tg_lb = QLabel("Теги")
 tg_lst = QListWidget()
-tg_edit = QLineEdit("Введіть тег...")
+tg_edit = QLineEdit("")
 
 btn_tg_create = QPushButton("Зробити тег")
 btn_tg_delete = QPushButton("Видалити тег")
@@ -113,6 +113,59 @@ def del_note():
 
 
 
+def add_tag():
+    key = lst_notes.currentItem().text()
+    tag = tg_edit.text()
+
+    notes[key]["теги"].append(tag)
+
+    tg_lst.addItem(tag)
+    tg_edit.clear()
+    
+    save_file()
+
+
+def del_tag():
+    key = lst_notes.currentItem().text()
+    tag = tg_lst.currentItem().text()
+
+    notes[key]["теги"].remove(tag)
+
+    tg_lst.clear()
+    tg_lst.addItems(notes[key]["теги"])
+
+    save_file()
+
+
+def find_tag():
+    tag = tg_edit.text()
+
+    if btn_tg_find.text() == "Шукати за тегом":
+        filtered_notes = {}
+
+        for key in notes:  
+            if tag in notes[key]["теги"]:
+                filtered_notes[key] = notes[key]
+        btn_tg_find.setText("Скинути пошук")
+        lst_notes.clear()
+        lst_notes.addItems(filtered_notes)
+
+        tg_lst.clear()
+
+    elif btn_tg_find.text() == "Скинути пошук":
+        btn_tg_find.setText("Шукати за тегом")
+
+        lst_notes.clear()
+        tg_lst.clear()
+        tg_edit.clear()
+
+        lst_notes.addItems(notes)
+
+
+btn_tg_create.clicked.connect(add_tag)
+btn_tg_delete.clicked.connect(del_tag)
+btn_tg_find.clicked.connect(find_tag)
+
 with open("txt.json", "r", encoding="utf-8") as file:
     notes = json.load(file)
 
@@ -126,7 +179,36 @@ lst_notes.addItems(notes)
 
 
 
-
+window.setStyleSheet('''
+                        background-color: rgb(25, 25, 112);
+                        color: white;
+                        font-size: 20px;
+                        border: 2px solid white; 
+                        ''')
+btn_note_create.setStyleSheet('''
+                        background-color: green;
+                        color: white;
+                        font-size: 20px;
+                        border: 2px solid white; 
+                        ''')
+btn_note_delete.setStyleSheet('''
+                        background-color: red;
+                        color: white;
+                        font-size: 20px;
+                        border: 2px solid white; 
+                        ''')
+btn_tg_create.setStyleSheet('''
+                        background-color: green;
+                        color: white;
+                        font-size: 20px;
+                        border: 2px solid white; 
+                        ''')
+btn_tg_delete.setStyleSheet('''
+                        background-color: red;
+                        color: white;
+                        font-size: 20px;
+                        border: 2px solid white; 
+                        ''')
 window.setLayout(layout_notes)
 window.show()
 app.exec_()

@@ -1,6 +1,16 @@
 {
     "dsfdsf": {
-        "теги": [],
+        "теги": [
+            "asdsd",
+            "negr"
+        ],
         "текст": "adsfsfs"
+    },
+    "zamitka": {
+        "теги": [
+            "teg",
+            "asdsad"
+        ],
+        "текст": "zamitka text 123"
     }
 }
