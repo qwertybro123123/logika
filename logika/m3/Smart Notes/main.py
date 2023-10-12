@@ -180,7 +180,7 @@ lst_notes.addItems(notes)
 
 
 window.setStyleSheet('''
-                        background-color: rgb(25, 25, 112);
+                        background-color: rgb(25, 25, 112); 
                         color: white;
                         font-size: 20px;
                         border: 2px solid white; 
