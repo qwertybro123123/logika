@@ -28,6 +28,5 @@ class ImageEditor():
 
 img = ImageEditor("sigma.jpg")
 img.open()
-img.do_crop()
-img = ImageEditor("ventilator.jpg")
-img.open()
+img.do_left()
+
