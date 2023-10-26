@@ -19,9 +19,8 @@ btn_right = QPushButton("left")
 btn_flip = QPushButton("flip")
 btn_sharp = QPushButton("sharp")
 btn_bw = QPushButton("b/w")
-
 lst_files = QListWidget()
-lb_pic = QLabel("卍")
+lb_pic = QLabel("")   
 
 
 layout_editor = QHBoxLayout()
@@ -47,8 +46,6 @@ layout_editor.addLayout(col1,1)
 layout_editor.addLayout(col2,4)
 
 
-workdir = QFileDialog.getExistingDirectory()
-files = os.listdir(workdir)
 
 def filter(filenames):
     result = []
@@ -58,6 +55,61 @@ def filter(filenames):
             result.append(file)
             
     return result
+
+def show_files():
+    global workdir
+    workdir = QFileDialog.getExistingDirectory()
+    files = os.listdir(workdir)
+    graphic_files = filter(files)
+
+    lst_files.clear()
+    lst_files.addItems(graphic_files)
+
+class ImageProcessor():
+    def __init__(self) -> None:
+        self.original = None
+        self.filename = None
+        self.save_dir = "Modified/"
+
+    def load_image(self, filename):
+        self.filename = filename
+        full_path = os.path.join(workdir, filename)
+        self.original = Image.open(full_path)
+
+    def show_image(self, path):
+        lb_pic.hide()
+
+        pixmapimage = QPixmap(path)
+        w,h = lb_pic.width(), lb_pic.height()
+
+        pixmapimage = pixmapimage.scaled(w,h,Qt.KeepAspectRatio)
+
+        lb_pic.setPixmap(pixmapimage)
+        lb_pic.show()
+
+    def saveAndShowImage(self):
+        path = os.path.join(workdir, self.save_dir)
+
+        if not (os.path.exists(path) or os.path.isdir(path)):
+            os.mkdir(path)
+
+        image_path = os.path.join(path,self.filename)
+        self.original.save(image_path)
+        self.show_image(image_path)
+
+def showChosenItem():
+    filename = lst_files.currentItem().text()
+    workimage.load_image(filename)
+    full_path = os.path.join(workdir, filename)
+    workimage.show_image(full_path)
+
+workimage = ImageProcessor()
+
+
+
+lst_files.currentRowChanged.connect(showChosenItem)
+
+btn_folder.clicked.connect(show_files)
 
 window.setLayout(layout_editor)
 window.show()
