@@ -1,6 +1,13 @@
+
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import (
+    QApplication, QWidget, QLabel, QPushButton, 
+    QHBoxLayout, QVBoxLayout, QListWidget, QLineEdit, 
+    QTextEdit, QInputDialog, QTableWidget,  QListWidgetItem,
+    QFormLayout, QGroupBox, QButtonGroup, QRadioButton, QSpinBox, QFileDialog)
 from PyQt5.QtGui import QPixmap 
+import json 
+
 
 from PIL import Image, ImageFilter
 
@@ -11,16 +18,15 @@ app = QApplication([])
 window = QWidget()
 
 
+btn_folder = QPushButton('Папка')
+btn_left = QPushButton('Вліво')
+btn_right = QPushButton('Вправо')
+btn_mirror = QPushButton('Дзеркало')
+btn_sharpness = QPushButton('Різкість')
+btn_bw = QPushButton('Ч/Б')
 
-
-btn_folder = QPushButton("folder")
-btn_left = QPushButton("right")
-btn_right = QPushButton("left")
-btn_flip = QPushButton("flip")
-btn_sharp = QPushButton("sharp")
-btn_bw = QPushButton("b/w")
-lst_files = QListWidget()
-lb_pic = QLabel("")   
+listpicture = QListWidget()
+picture = QLabel()
 
 
 layout_editor = QHBoxLayout()
@@ -28,91 +34,134 @@ layout_editor = QHBoxLayout()
 col1 = QVBoxLayout()
 col2 = QVBoxLayout()
 
-row1 = QHBoxLayout()
-
+row = QHBoxLayout()
 col1.addWidget(btn_folder)
-col1.addWidget(lst_files)
+col1.addWidget(listpicture)
 
-row1.addWidget(btn_left)
-row1.addWidget(btn_right)
-row1.addWidget(btn_flip)
-row1.addWidget(btn_sharp)
-row1.addWidget(btn_bw)
+row.addWidget(btn_left)
+row.addWidget(btn_right)
+row.addWidget(btn_mirror)
+row.addWidget(btn_sharpness)
+row.addWidget(btn_bw)
 
-col2.addWidget(lb_pic)
-col2.addLayout(row1)
+col2.addWidget(picture)
+col2.addLayout(row)
 
-layout_editor.addLayout(col1,1)
-layout_editor.addLayout(col2,4)
+layout_editor.addLayout(col1, 1)
+layout_editor.addLayout(col2, 4)
+
+
+
+
+
+
 
 
 
 def filter(filenames):
     result = []
-    ext = ["jpg","png","jpeg","bmp","gif"]
+    ext = ['jpg', 'png', 'jpeg', 'bmp', 'gif']
+
+
     for file in filenames:
-        if file.split(".")[-1] in ext:
+        if file.split('.')[-1] in ext:
             result.append(file)
-            
     return result
 
-def show_files():
+
+
+def showfilenamelist():
     global workdir
     workdir = QFileDialog.getExistingDirectory()
     files = os.listdir(workdir)
-    graphic_files = filter(files)
+    filtered_img = filter(files)
 
-    lst_files.clear()
-    lst_files.addItems(graphic_files)
+    listpicture.clear()
+
+    listpicture.addItems(filtered_img)
+
+
+
 
 class ImageProcessor():
-    def __init__(self) -> None:
+    def __init__(self):
         self.original = None
         self.filename = None
-        self.save_dir = "Modified/"
+        self.save_dir = 'modified/'
 
-    def load_image(self, filename):
+    def LoadImage(self, filename):
         self.filename = filename
+
         full_path = os.path.join(workdir, filename)
+
         self.original = Image.open(full_path)
 
+    
     def show_image(self, path):
-        lb_pic.hide()
+        picture.hide()
 
         pixmapimage = QPixmap(path)
-        w,h = lb_pic.width(), lb_pic.height()
 
-        pixmapimage = pixmapimage.scaled(w,h,Qt.KeepAspectRatio)
+        w, h  = picture.width(), picture.height()
 
-        lb_pic.setPixmap(pixmapimage)
-        lb_pic.show()
+        pixmapimage = pixmapimage.scaled(w, h, Qt.KeepAspectRatio)
+        picture.setPixmap(pixmapimage)
+
+
+        picture.show()
+    
 
     def saveAndShowImage(self):
         path = os.path.join(workdir, self.save_dir)
+        
 
         if not (os.path.exists(path) or os.path.isdir(path)):
             os.mkdir(path)
 
-        image_path = os.path.join(path,self.filename)
+        image_path = os.path.join(path, self.filename)
         self.original.save(image_path)
         self.show_image(image_path)
 
+    def do_bw(self):
+        self.original = self.original.convert("L")
+        self.saveAndShowImage()
+    def do_sharp(self):
+        self.original = self.original.filter(ImageFilter.SHARPEN)
+        self.saveAndShowImage()
+    def do_left(self):
+        self.original = self.original.transpose(Image.ROTATE_90)
+        self.saveAndShowImage()
+    def do_right(self):
+        self.original = self.original.transpose(Image.ROTATE_270)
+        self.saveAndShowImage()
+    def do_flip(self):
+        self.original = self.original.transpose(Image.FLIP_LEFT_RIGHT)
+        self.saveAndShowImage()
 def showChosenItem():
-    filename = lst_files.currentItem().text()
-    workimage.load_image(filename)
+    filename = listpicture.currentItem().text()
+    work_image.LoadImage(filename)
     full_path = os.path.join(workdir, filename)
-    workimage.show_image(full_path)
+    work_image.show_image(full_path)
 
-workimage = ImageProcessor()
+work_image = ImageProcessor()
 
 
+listpicture.itemClicked.connect(showChosenItem)
+btn_folder.clicked.connect(showfilenamelist)
+btn_bw.clicked.connect(work_image.do_bw)
+btn_left.clicked.connect(work_image.do_left)
+btn_right.clicked.connect(work_image.do_right)
+btn_sharpness.clicked.connect(work_image.do_sharp)
+btn_mirror.clicked.connect(work_image.do_flip)
 
-lst_files.currentRowChanged.connect(showChosenItem)
+window.setStyleSheet('''
+                        background-color: #161925;
+                        color: #CBF7ED;
+                        font-size: 20px;
+                        border: 2px solid #8ea8c3; 
+                        ''')
 
-btn_folder.clicked.connect(show_files)
-
+window.resize(1200,800)
 window.setLayout(layout_editor)
 window.show()
 app.exec_()
-
-
