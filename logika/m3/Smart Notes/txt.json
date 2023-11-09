@@ -2,15 +2,24 @@
     "dsfdsf": {
         "теги": [
             "asdsd",
-            "negr"
+            "sdsdfsd"
         ],
-        "текст": "adsfsfs"
+        "текст": "fsdfdsfsdfs"
     },
     "zamitka": {
         "теги": [
             "teg",
-            "asdsad"
+            "asdsad",
+            ""
         ],
         "текст": "zamitka text 123"
+    },
+    "замітка": {
+        "теги": [
+            "",
+            "",
+            "teg1"
+        ],
+        "текст": ""
     }
 }
