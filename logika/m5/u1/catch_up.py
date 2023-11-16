@@ -23,8 +23,9 @@ game = True
 
 while game:
     window.blit(background,(0,0))
-    window.blit(sprite1,(x1,y1))
     window.blit(sprite2,(x2,y2))
+    window.blit(sprite1,(x1,y1))
+
     
     
     
