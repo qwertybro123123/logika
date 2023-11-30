@@ -1,7 +1,6 @@
 #створи гру "Лабіринт"!
 from typing import Any
 from pygame import *
-
 from pygame.transform import scale, flip
 from pygame.image import load
 from random import randint
@@ -48,6 +47,24 @@ class Enemy(GameSprite):
         if self.rect.x >= win_widht-70:
             self.direction = "left"
 
+class Wall(sprite.Sprite):
+    def __init__(self, wall_x, wall_y, wall_widht, wall_height):
+        super().__init__()
+        self.width = wall_widht
+        self.height = wall_height
+
+        self.image = Surface((self.width, self.height))
+
+
+        self.rect = self.image.get_rect()
+        self.rect.x = wall_x
+        self.rect.y = wall_y
+
+        self.image.fill((0,200,0))
+    def reset(self):
+        window.blit(self.image,(self.rect.x, self.rect.y))
+
+
 win_widht = 700
 win_height = 500
 
@@ -57,13 +74,26 @@ background = scale(load("background.jpg"), (win_widht, win_height))
 player = Player("hero.png", 20, win_height-80, 4)
 monster = Enemy("cyborg.png", 600, 350, 2)
 treasure = GameSprite("treasure.png", win_widht-80, win_height-80, 0)
-
+wall1 = Wall(100,100,20,400)
+wall2 = Wall(100,80,300,20)
+wall3 = Wall(400,80,20,600)
+wall4 = Wall(400,300,150,20)
+wall5 = Wall(550,200,150,20)
+walls = [wall1,wall2,wall3,wall4,wall5]
 clock = time.Clock()
 FPS = 120
 game = True
 finish = False
+
+font.init()
+f =font.Font(None, 70)
+win = f.render("You win!", True, (255,215,0))
+lose = f.render("You lose!", True, (255,0,0))
+
 mixer.init()
 mixer.music.load("jungles.ogg")
+money = mixer.Sound("money.ogg")
+kick = mixer.Sound("kick.ogg")
 mixer.music.play
 
 
@@ -78,6 +108,20 @@ while game:
         player.reset()
         monster.reset()
         treasure.reset()
+        for wall in walls:
+            wall.reset()
+
+
+        if sprite.collide_rect(player, treasure):
+            finish = True
+            window.blit(win, (200, 200))
+            money.play()
+        for wall in walls:
+            if sprite.collide_rect(player, monster) or sprite.collide_rect(player, wall):
+                finish = True
+                window.blit(lose, (200, 200))
+                kick.play()
+            
 
             
 
