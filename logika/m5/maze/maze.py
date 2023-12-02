@@ -69,10 +69,10 @@ win_widht = 700
 win_height = 500
 
 window = display.set_mode((win_widht,win_height))
-background = scale(load("background.jpg"), (win_widht, win_height))
+background = scale(load("background.png"), (win_widht, win_height))
 
-player = Player("hero.png", 20, win_height-80, 4)
-monster = Enemy("cyborg.png", 600, 350, 2)
+player = Player("player.jpg", 20, win_height-80, 4)
+monster = Enemy("enemy.jpg", 600, 350, 2)
 treasure = GameSprite("treasure.png", win_widht-80, win_height-80, 0)
 wall1 = Wall(100,100,20,400)
 wall2 = Wall(100,80,300,20)
@@ -80,6 +80,7 @@ wall3 = Wall(400,80,20,600)
 wall4 = Wall(400,300,150,20)
 wall5 = Wall(550,200,150,20)
 walls = [wall1,wall2,wall3,wall4,wall5]
+
 clock = time.Clock()
 FPS = 120
 game = True
@@ -91,10 +92,11 @@ win = f.render("You win!", True, (255,215,0))
 lose = f.render("You lose!", True, (255,0,0))
 
 mixer.init()
-mixer.music.load("jungles.ogg")
-money = mixer.Sound("money.ogg")
-kick = mixer.Sound("kick.ogg")
+mixer.music.load("jungles.mp3")
 mixer.music.play
+money = mixer.Sound("money.mp3")
+kick = mixer.Sound("kick.mp3")
+
 
 
 while game:
