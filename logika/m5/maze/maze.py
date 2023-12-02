@@ -93,7 +93,7 @@ lose = f.render("You lose!", True, (255,0,0))
 
 mixer.init()
 mixer.music.load("jungles.mp3")
-mixer.music.play
+mixer.music.play()
 money = mixer.Sound("money.mp3")
 kick = mixer.Sound("kick.mp3")
 
@@ -117,11 +117,13 @@ while game:
         if sprite.collide_rect(player, treasure):
             finish = True
             window.blit(win, (200, 200))
+            mixer.music.stop()
             money.play()
         for wall in walls:
             if sprite.collide_rect(player, monster) or sprite.collide_rect(player, wall):
                 finish = True
                 window.blit(lose, (200, 200))
+                mixer.music.stop()
                 kick.play()
             
 
