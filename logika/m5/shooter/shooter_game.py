@@ -32,7 +32,9 @@ class Player(GameSprite):
         if keys[K_d] and self.rect.x <620:
             self.rect.x += self.speed
     def fire(self):
-        pass
+        bullet = Bullet("bullet.png", self.rect.centerx, self.rect.top, 15, 20, 15)
+        bullets.add(bullet)
+
 
 class Enemy(GameSprite):
     def update(self):
@@ -43,6 +45,13 @@ class Enemy(GameSprite):
             global lost
             lost += 1
 
+
+class Bullet(GameSprite):
+    def update(self):
+        self.rect.y -= self.speed
+        if self.rect.y < 0:
+            self.kill()
+    
 
 win_width = 700
 win_height = 500
@@ -59,6 +68,10 @@ font1 = font.SysFont("Arial", 36)
 txt_lose = font1.render(f"Lost: {lost}", True, (255,255,255))
 txt_score = font1.render(f"Score: {score}", True, (255,255,255))
 
+
+bullets = sprite.Group()
+
+
 monsters = sprite.Group()
 for i in range(5):
     x = randint(0, win_width-80)
@@ -66,7 +79,6 @@ for i in range(5):
     speed = randint(2,4)
     mon = Enemy("ufo.png", x, y, 80, 50, speed)
     monsters.add(mon)
-enemys = []
 
 
 
@@ -83,11 +95,17 @@ mixer.init()
 mixer.music.load("space.ogg")
 mixer.music.set_volume(0.05)
 #mixer.music.play(-1)
-
+fire_sound = mixer.Sound("fire.ogg")
 while game:
     for e in event.get():
         if e.type == QUIT:
             game = False
+        if e.type == KEYDOWN:
+            if e.key == K_SPACE:
+                ship.fire()
+                fire_sound.play()
+
+
 
     if not finish:
         window.blit(background,(0,0))
@@ -97,19 +115,19 @@ while game:
         window.blit(txt_score, (10,80))
         ship.reset()
         monsters.draw(window)
+        bullets.draw(window)
         
 
 
 
-        
         
         ship.update()
         monsters.update()
+        bullets.update()    
 
 
 
-        if lost >= 3:
-            finish = True
+
 
 
 
