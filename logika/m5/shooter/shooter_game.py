@@ -64,10 +64,11 @@ ship = Player("rocket.png", 20, win_height-110, 80, 100, 12)
 
 font.init()
 font1 = font.SysFont("Arial", 36)
-
+font2 = font.SysFont("Arial", 80)
 txt_lose = font1.render(f"Lost: {lost}", True, (255,255,255))
 txt_score = font1.render(f"Score: {score}", True, (255,255,255))
-
+you_lose = font2.render("You lose", True, (255,0,0))
+you_win = font2.render("You win", True, (0,255,50))
 
 bullets = sprite.Group()
 
@@ -95,7 +96,7 @@ mixer.init()
 mixer.music.load("space.ogg")
 mixer.music.set_volume(0.05)
 #mixer.music.play(-1)
-fire_sound = mixer.Sound("fire.ogg")
+#fire_sound = mixer.Sound("fire.ogg")
 while game:
     for e in event.get():
         if e.type == QUIT:
@@ -103,7 +104,7 @@ while game:
         if e.type == KEYDOWN:
             if e.key == K_SPACE:
                 ship.fire()
-                fire_sound.play()
+                #fire_sound.play()
 
 
 
@@ -116,7 +117,21 @@ while game:
         ship.reset()
         monsters.draw(window)
         bullets.draw(window)
-        
+        if sprite.spritecollide(ship, monsters, False):
+            finish = True
+            window.blit(you_lose, (200,200))
+        collides = sprite.groupcollide(monsters, bullets, True, True)
+        for c in collides:
+            mon = Enemy("ufo.png", randint(0,600), y, 80, 50, speed)
+            monsters.add(mon)
+            score+=1
+        if score == 20:
+            finish = True
+            window.blit(you_win, (200, 200))
+
+
+
+
 
 
 
@@ -124,8 +139,21 @@ while game:
         ship.update()
         monsters.update()
         bullets.update()    
+    else:
+        finish = False
+        score = 0
+        lost = 0        
+        for b in bullets:
+            b.kill()
+        for m in monsters:
+            m.kill()        
 
 
+        
+        time.delay(3000)
+        for i in range(5):
+            mon = Enemy("ufo.png", randint(0,600), y, 80, 50, speed)
+            monsters.add(mon)
 
 
 
